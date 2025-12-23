@@ -8,7 +8,7 @@ mcp = FastMCP("weather-services")
 def get_weather(city: str) -> dict:
     """
     Get current weather for a city.
-    
+
     Args:
         city: Name of city (e.g., "London", "New York", "Tokyo")
     """
@@ -16,11 +16,11 @@ def get_weather(city: str) -> dict:
         response = requests.get(
             f"https://wttr.in/{city}?format=j1",
             headers={"User-Agent": "SuperBox-MCP/1.0"},
-            timeout=10
+            timeout=10,
         )
         response.raise_for_status()
         data = response.json()
-        
+
         current = data["current_condition"][0]
         return {
             "city": city,
@@ -28,7 +28,7 @@ def get_weather(city: str) -> dict:
             "temperature_fahrenheit": int(current["temp_F"]),
             "condition": current["weatherDesc"][0]["value"],
             "humidity_percent": int(current["humidity"]),
-            "wind_kph": int(current['windspeedKmph'])
+            "wind_kph": int(current["windspeedKmph"]),
         }
     except Exception as e:
         return {"error": str(e)}
@@ -38,7 +38,7 @@ def get_weather(city: str) -> dict:
 def get_forecast(city: str, days: int = 3) -> dict:
     """
     Get weather forecast for a city.
-    
+
     Args:
         city: Name of city
         days: Number of days (1-3)
@@ -48,26 +48,25 @@ def get_forecast(city: str, days: int = 3) -> dict:
         response = requests.get(
             f"https://wttr.in/{city}?format=j1",
             headers={"User-Agent": "SuperBox-MCP/1.0"},
-            timeout=10
+            timeout=10,
         )
         response.raise_for_status()
         data = response.json()
-        
+
         forecast = []
         for day in data["weather"][:days]:
-            forecast.append({
-                "date": day["date"],
-                "max_temp_celsius": int(day["maxtempC"]),
-                "min_temp_celsius": int(day["mintempC"]),
-                "max_temp_fahrenheit": int(day["maxtempF"]),
-                "min_temp_fahrenheit": int(day["mintempF"]),
-                "condition": day["hourly"][4]["weatherDesc"][0]["value"]
-            })
-        
-        return {
-            "city": city,
-            "forecast": forecast
-        }
+            forecast.append(
+                {
+                    "date": day["date"],
+                    "max_temp_celsius": int(day["maxtempC"]),
+                    "min_temp_celsius": int(day["mintempC"]),
+                    "max_temp_fahrenheit": int(day["maxtempF"]),
+                    "min_temp_fahrenheit": int(day["mintempF"]),
+                    "condition": day["hourly"][4]["weatherDesc"][0]["value"],
+                }
+            )
+
+        return {"city": city, "forecast": forecast}
     except Exception as e:
         return {"error": str(e)}
 

@@ -11,7 +11,7 @@ def get_location() -> dict:
         response = requests.get("http://ip-api.com/json/", timeout=5)
         response.raise_for_status()
         data = response.json()
-        
+
         if data.get("status") == "success":
             return {
                 "city": data.get("city"),
@@ -20,7 +20,7 @@ def get_location() -> dict:
                 "country_code": data.get("countryCode"),
                 "latitude": data.get("lat"),
                 "longitude": data.get("lon"),
-                "timezone": data.get("timezone")
+                "timezone": data.get("timezone"),
             }
         return {"error": "Could not determine location"}
     except Exception as e:
@@ -31,7 +31,7 @@ def get_location() -> dict:
 def search_place(place_name: str) -> dict:
     """
     Convert place name to coordinates.
-    
+
     Args:
         place_name: Name of location (e.g., "Paris", "Times Square", "Tokyo Tower")
     """
@@ -40,11 +40,11 @@ def search_place(place_name: str) -> dict:
             "https://nominatim.openstreetmap.org/search",
             params={"q": place_name, "format": "json", "limit": 1},
             headers={"User-Agent": "SuperBox-MCP/1.0"},
-            timeout=5
+            timeout=5,
         )
         response.raise_for_status()
         data = response.json()
-        
+
         if data:
             loc = data[0]
             return {
@@ -52,7 +52,7 @@ def search_place(place_name: str) -> dict:
                 "display_name": loc["display_name"],
                 "latitude": float(loc["lat"]),
                 "longitude": float(loc["lon"]),
-                "type": loc.get("type")
+                "type": loc.get("type"),
             }
         return {"error": f"Location not found: {place_name}"}
     except Exception as e:
@@ -63,7 +63,7 @@ def search_place(place_name: str) -> dict:
 def reverse_geocode(latitude: float, longitude: float) -> dict:
     """
     Convert coordinates to place name.
-    
+
     Args:
         latitude: Latitude coordinate
         longitude: Longitude coordinate
@@ -73,17 +73,17 @@ def reverse_geocode(latitude: float, longitude: float) -> dict:
             "https://nominatim.openstreetmap.org/reverse",
             params={"lat": latitude, "lon": longitude, "format": "json"},
             headers={"User-Agent": "SuperBox-MCP/1.0"},
-            timeout=5
+            timeout=5,
         )
         response.raise_for_status()
         data = response.json()
-        
+
         if "display_name" in data:
             return {
                 "latitude": latitude,
                 "longitude": longitude,
                 "display_name": data["display_name"],
-                "address": data.get("address", {})
+                "address": data.get("address", {}),
             }
         return {"error": "Location not found"}
     except Exception as e:
