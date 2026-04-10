@@ -30,7 +30,7 @@ def get_location() -> dict:
 @mcp.tool()
 def search_place(place_name: str) -> dict:
     """
-    Convert place name to coordinates.
+    Convert a place name to coordinates.
 
     Args:
         place_name: Name of location (e.g., "Paris", "Times Square", "Tokyo Tower")
@@ -62,7 +62,7 @@ def search_place(place_name: str) -> dict:
 @mcp.tool()
 def reverse_geocode(latitude: float, longitude: float) -> dict:
     """
-    Convert coordinates to place name.
+    Convert coordinates to a place name.
 
     Args:
         latitude: Latitude coordinate
@@ -78,14 +78,14 @@ def reverse_geocode(latitude: float, longitude: float) -> dict:
         response.raise_for_status()
         data = response.json()
 
-        if "display_name" in data:
-            return {
-                "latitude": latitude,
-                "longitude": longitude,
-                "display_name": data["display_name"],
-                "address": data.get("address", {}),
-            }
-        return {"error": "Location not found"}
+        return {
+            "latitude": latitude,
+            "longitude": longitude,
+            "display_name": data.get("display_name"),
+            "city": data.get("address", {}).get("city")
+            or data.get("address", {}).get("town"),
+            "country": data.get("address", {}).get("country"),
+        }
     except Exception as e:
         return {"error": str(e)}
 

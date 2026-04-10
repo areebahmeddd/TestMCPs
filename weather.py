@@ -41,7 +41,7 @@ def get_forecast(city: str, days: int = 3) -> dict:
 
     Args:
         city: Name of city
-        days: Number of days (1-3)
+        days: Number of forecast days (1-3)
     """
     try:
         days = min(max(days, 1), 3)
