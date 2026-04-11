@@ -8,7 +8,17 @@ mcp = FastMCP("location-services")
 def get_location() -> dict:
     """Get your current location based on your IP address."""
     try:
-        response = requests.get("http://ip-api.com/json/", timeout=5)
+        # When running via SuperBox on Cloudflare, outbound requests originate
+        # from a Cloudflare edge node (e.g. Singapore), not the caller's machine.
+        # The executor injects __client_ip__ with the real caller IP so that
+        # ip-api.com returns the correct geographic location.
+        try:
+            _ip = __client_ip__
+        except NameError:
+            _ip = ""
+
+        url = f"http://ip-api.com/json/{_ip}" if _ip else "http://ip-api.com/json/"
+        response = requests.get(url, timeout=5)
         response.raise_for_status()
         data = response.json()
 
