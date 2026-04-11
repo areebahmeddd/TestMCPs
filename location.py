@@ -17,7 +17,7 @@ def get_location() -> dict:
         except NameError:
             _ip = ""
 
-        url = f"http://ip-api.com/json/{_ip}" if _ip else "http://ip-api.com/json/"
+        url = f"http://ip-api.com/json/{_ip}"
         response = requests.get(url, timeout=5)
         response.raise_for_status()
         data = response.json()
